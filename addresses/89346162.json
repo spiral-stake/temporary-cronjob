@@ -1,0 +1,48 @@
+{
+  "YBTs": {
+    "sfrxETH": "0x2016B5409AE889A1D6BD4eFB764A9f56EB5E84fa",
+    "stETH": "0xB41E941e493e7Df8529Db24EbBA1aC59A2aBc441",
+    "swETH": "0x498a022bA5F0e3A761984d5384933380CC625FFe"
+  },
+  "spiralPoolFactory": "0x7d043d0fDBA737dc805B7993F535e9159cB8FC74",
+  "spiralPoolRouter": "0x9D2A9Da43Ff607275e8c416314761934344863A5",
+  "underlying": {
+    "frxETH": {
+      "YBTs": {
+        "sfrxETH": {
+          "address": "0x2016B5409AE889A1D6BD4eFB764A9f56EB5E84fa",
+          "decimals": "18",
+          "name": "Staked Frax Ether",
+          "syAddress": "0xefABfC41DfAe2c5F93010085de8825e7C360A19d",
+          "symbol": "sfrxETH"
+        }
+      },
+      "address": "0x83F40853BB1a7485FF46742476489b0fd27d3ABD",
+      "decimals": "18",
+      "name": "Frax Ether",
+      "symbol": "frxETH"
+    },
+    "wETH": {
+      "YBTs": {
+        "stETH": {
+          "address": "0xB41E941e493e7Df8529Db24EbBA1aC59A2aBc441",
+          "decimals": "18",
+          "name": "Lido Staked Ether",
+          "syAddress": "0xBD07Ad20C76ad7FbDCf69afae9Fc58bBBBF9881C",
+          "symbol": "stETH"
+        },
+        "swETH": {
+          "address": "0x498a022bA5F0e3A761984d5384933380CC625FFe",
+          "decimals": "18",
+          "name": "Swell Staked Ether",
+          "syAddress": "0xF0cfdAd2A705a12e98e12d2D6907d910083B067f",
+          "symbol": "swETH"
+        }
+      },
+      "address": "0x81d784c2DEe693C42da3532F11B0B565BD8E10cf",
+      "decimals": "18",
+      "name": "Wrapped Ether",
+      "symbol": "wETH"
+    }
+  }
+}

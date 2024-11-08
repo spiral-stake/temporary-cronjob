@@ -1,17 +1,15 @@
 const cron = require("node-cron");
 const ethers = require("ethers");
-const { abi: spiralPoolAbi } = require("../../v1-core/out/SpiralPool.sol/SpiralPool.json");
+const { abi: spiralPoolAbi } = require("../abi/SpiralPool.sol/SpiralPool.json");
+const { abi: poolFactoryAbi } = require("../abi/SpiralPoolFactory.sol/SpiralPoolFactory.json");
 const { getCronTime } = require("../utils/getCronTime");
-const {
-  abi: poolFactoryAbi,
-} = require("../../v1-core/out/SpiralPoolFactory.sol/SpiralPoolFactory.json");
 
-async function getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactoryAddress, underlying) {
+async function getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactoryAddress, baseTokens) {
   const poolFactoryContract = new ethers.Contract(spiralPoolFactoryAddress, poolFactoryAbi, wallet);
 
-  for (let underlyingToken of Object.values(underlying)) {
+  for (let baseToken of baseTokens) {
     const spiralPoolAddresses = await poolFactoryContract.getSpiralPoolsForBaseToken(
-      underlyingToken.address
+      baseToken.address
     );
 
     const spiralPools = await Promise.all(

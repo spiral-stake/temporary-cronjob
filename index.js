@@ -9,18 +9,20 @@ const {
 const { ethers } = require("ethers");
 const { scheduleAddYbtYieldCronjob } = require("./scripts/addYbtYield");
 const { getCommandArgs } = require("./utils/getCommandArgs");
+const { onboard } = require("./scripts/onboard");
+const { getTokens } = require("./utils/getTokens");
+const { corsOption } = require("./config/cors");
 
 const app = express();
-const { port, rpcUrl, chain } = getCommandArgs();
+const { port, rpcUrl, chain, privateKey } = getCommandArgs();
 const provider = new ethers.JsonRpcProvider(rpcUrl);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const wallet = new ethers.Wallet(privateKey, provider);
 
-const { spiralPoolFactory } = require(`../v1-core/addresses/${chain}.json`);
-const { underlying } = require(`../v1-core/addresses/${chain}.json`);
-const { YBTs } = require(`../v1-core/addresses/${chain}.json`);
-const ybtAddresses = Object.values(YBTs);
+const addresses = require(`./addresses/${chain}.json`);
+const { spiralPoolFactory } = addresses;
+const { ybts, baseTokens } = getTokens(addresses);
 
-app.use(cors());
+app.use(cors(corsOption));
 app.use(express.json());
 
 app.post("/schedule-pool-cronjob", async (req, res) => {
@@ -36,8 +38,15 @@ app.post("/schedule-pool-cronjob", async (req, res) => {
   }
 });
 
+app.post("/onboard", async (req, res) => {
+  const { userAddress, amountNative, amountYbt, amountBase } = req.body;
+  await onboard(wallet, ybts, baseTokens, userAddress, amountNative, amountYbt, amountBase);
+
+  res.status(200).send("Onboarding successful");
+});
+
 app.listen(port, async () => {
-  getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactory, underlying);
+  getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactory, baseTokens);
   // scheduleAddYbtYieldCronjob(wallet, ybtAddresses); need to un-comment
 
   console.log(`Server running on port ${port}`);

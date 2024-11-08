@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 const ethers = require("ethers");
-const { abi } = require("../../v1-core/out/stETH.mock.sol/StETH.json");
+const { abi } = require("../abi/stETH.mock.sol/StETH.json");
 
 const ybtAbi = abi;
 
