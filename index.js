@@ -47,7 +47,7 @@ app.post("/onboard", async (req, res) => {
 
 app.listen(port, async () => {
   getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactory, baseTokens);
-  // scheduleAddYbtYieldCronjob(wallet, ybtAddresses); need to un-comment
+  scheduleAddYbtYieldCronjob(wallet, ybts);
 
   console.log(`Server running on port ${port}`);
 });

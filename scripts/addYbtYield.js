@@ -4,9 +4,9 @@ const { abi } = require("../abi/stETH.mock.sol/StETH.json");
 
 const ybtAbi = abi;
 
-async function addYbtYield(wallet, ybtAddresses) {
-  for (let i = 0; i < ybtAddresses.length; i++) {
-    const address = ybtAddresses[i];
+async function addYbtYield(wallet, ybts) {
+  for (let i = 0; i < ybts.length; i++) {
+    const address = ybts[i].address;
     try {
       const contract = new ethers.Contract(address, ybtAbi, wallet);
       const estimatedGas = await contract.addInterest.estimateGas();
@@ -24,10 +24,10 @@ async function addYbtYield(wallet, ybtAddresses) {
   }
 }
 
-async function scheduleAddYbtYieldCronjob(wallet, ybtAddresses) {
+async function scheduleAddYbtYieldCronjob(wallet, ybts) {
   cron.schedule("*/30 * * * * *", () => {
     console.log("Adding Interest to the YBTs");
-    addYbtYield(wallet, ybtAddresses);
+    addYbtYield(wallet, ybts);
   });
 }
 
