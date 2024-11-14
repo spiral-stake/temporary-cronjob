@@ -25,7 +25,7 @@ async function addYbtYield(wallet, ybts) {
 }
 
 async function scheduleAddYbtYieldCronjob(wallet, ybts) {
-  cron.schedule("*/30 * * * * *", () => {
+  cron.schedule("*/5 * * * *", () => {
     console.log("Adding Interest to the YBTs");
     addYbtYield(wallet, ybts);
   });

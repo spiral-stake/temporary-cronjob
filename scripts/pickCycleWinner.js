@@ -45,33 +45,45 @@ async function getSpiralPool(wallet, poolAddress) {
   };
 }
 
-function scheduleCronjob(pool) {
-  const cronTime = getCronTime(pool.startTime);
+async function scheduleCronjob(pool) {
+  if (Date.now() < pool.startTime * 1000) {
+    const cronTime = getCronTime(pool.startTime);
+    cron.schedule(cronTime, async () => {
+      const positionsFilled = parseInt(await pool.contract.getPositionsFilled());
+      if (positionsFilled === pool.requiredPositions) {
+        _schedulePickCycleWinner(pool);
+      }
+    });
 
-  cron.schedule(cronTime, async () => {
+    console.log(`Scheduled start time pool check at ${cronTime}`);
+  } else {
     const positionsFilled = parseInt(await pool.contract.getPositionsFilled());
     if (positionsFilled === pool.requiredPositions) {
-      for (let i = 0; i < pool.totalCycles; i++) {
-        const cycleCronTime = getCronTime(
-          pool.startTime + pool.cycleDepositDuration + i * pool.cycleDuration
-        );
-
-        cron.schedule(cycleCronTime, async () => {
-          console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
-          try {
-            await pool.contract.selectWinnerAndTransferLiquidity();
-          } catch (error) {
-            // corrected variable name here
-            console.log("Error in selectWinnerAndTransferLiquidity:", error);
-          }
-        });
-
-        console.log(`Scheduled ping pick winner at ${cycleCronTime}`);
-      }
+      _schedulePickCycleWinner(pool);
     }
-  });
 
-  console.log(`Scheduled start time pool check at ${cronTime}`);
+    console.log("Pool start time has already elapsed. Scheduled immediately.");
+  }
+}
+
+async function _schedulePickCycleWinner(pool) {
+  for (let i = 0; i < pool.totalCycles; i++) {
+    const cycleCronTime = getCronTime(
+      pool.startTime + pool.cycleDepositDuration + i * pool.cycleDuration
+    );
+
+    cron.schedule(cycleCronTime, async () => {
+      console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
+      try {
+        await pool.contract.selectWinnerAndTransferLiquidity();
+      } catch (error) {
+        // corrected variable name here
+        console.log("Error in selectWinnerAndTransferLiquidity:", error);
+      }
+    });
+
+    console.log(`Scheduled ping pick winner at ${cycleCronTime}`);
+  }
 }
 
 module.exports = {
