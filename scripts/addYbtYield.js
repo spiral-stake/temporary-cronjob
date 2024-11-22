@@ -5,22 +5,19 @@ const { abi } = require("../abi/stETH.mock.sol/StETH.json");
 const ybtAbi = abi;
 
 async function addYbtYield(wallet, ybts) {
-  for (let i = 0; i < ybts.length; i++) {
-    const address = ybts[i].address;
-    try {
+  try {
+    let currentNonce = await wallet.getNonce();
+
+    ybts.map((ybt) => {
+      const address = ybt.address;
+
       const contract = new ethers.Contract(address, ybtAbi, wallet);
-      const estimatedGas = await contract.addInterest.estimateGas();
+      contract.addInterest({ nonce: currentNonce });
 
-      if (estimatedGas.toString() === "0") {
-        console.error(`Gas estimation failed for contract at index ${i}, address: ${address}`);
-        continue;
-      }
-
-      const tx = await contract.addInterest({ gasLimit: estimatedGas });
-      await tx.wait();
-    } catch (error) {
-      console.log(error);
-    }
+      currentNonce++;
+    });
+  } catch (error) {
+    console.log(error);
   }
 }
 

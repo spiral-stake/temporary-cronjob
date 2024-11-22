@@ -68,21 +68,23 @@ async function scheduleCronjob(pool) {
 
 async function _schedulePickCycleWinner(pool) {
   for (let i = 0; i < pool.totalCycles; i++) {
-    const cycleCronTime = getCronTime(
-      pool.startTime + pool.cycleDepositDuration + i * pool.cycleDuration
-    );
+    const cycleTime = pool.startTime + pool.cycleDepositDuration + i * pool.cycleDuration;
 
-    cron.schedule(cycleCronTime, async () => {
-      console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
-      try {
-        await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
-      } catch (error) {
-        // corrected variable name here
-        console.log("Error in selectWinnerAndTransferLiquidity:", error);
-      }
-    });
+    if (Date.now() < cycleTime * 1000) {
+      const cycleCronTime = getCronTime(cycleTime);
 
-    console.log(`Scheduled ping pick winner at ${cycleCronTime}`);
+      cron.schedule(cycleCronTime, async () => {
+        console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
+        try {
+          await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
+        } catch (error) {
+          // corrected variable name here
+          console.log("Error in selectWinnerAndTransferLiquidity:", error);
+        }
+      });
+
+      console.log(`Scheduled ping pick winner at ${cycleCronTime}`);
+    }
   }
 }
 
