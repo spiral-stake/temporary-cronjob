@@ -2,8 +2,8 @@ exports.getTokens = (data) => {
   const ybts = [];
   const baseTokens = [];
 
-  Object.keys(data.underlying).forEach((baseTokenKey) => {
-    const baseToken = data.underlying[baseTokenKey];
+  Object.keys(data.baseTokens).forEach((baseTokenKey) => {
+    const baseToken = data.baseTokens[baseTokenKey];
 
     baseTokens.push(baseToken);
 

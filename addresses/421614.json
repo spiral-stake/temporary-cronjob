@@ -1,23 +1,21 @@
 {
   "YBTs": {
-    "sfrxETH": "0xe2FC26e277d9a94971d97D230Ccea9786892A44C",
-    "stETH": "0x79D839aFC9d19c7ad204B954ca2d03B8732c04e9",
-    "swETH": "0xC3B30f11666aaF9E3437Be023476A03b8D0dbF80"
+    "sfrxETH": "0x24f55fBF80794F47B7dEb58Dc07a4592adb05F61",
+    "stETH": "0x10B53DF37A0E79f10df2C5a7AE0b4A795d944D0c",
+    "swETH": "0xC8002341Ba23091760e669CE27f3943506b976cA"
   },
-  "spiralPoolFactory": "0xa29F350209a9c24dFa9c3E340CDE8f0d068db847",
-  "spiralPoolRouter": "0x0000000000000000000000000000000000000000",
-  "underlying": {
+  "baseTokens": {
     "frxETH": {
       "YBTs": {
         "sfrxETH": {
-          "address": "0xe2FC26e277d9a94971d97D230Ccea9786892A44C",
+          "address": "0x24f55fBF80794F47B7dEb58Dc07a4592adb05F61",
           "decimals": "18",
           "name": "Staked Frax Ether",
-          "syAddress": "0xbcB43E5876C3B89b4fb0079483C23a746326b49E",
+          "syAddress": "0xbDfC0dD085C6399E15D95Ef4CBECA6aCaa86D8D7",
           "symbol": "sfrxETH"
         }
       },
-      "address": "0xBcF633327260E607e333f3C0CE9874B9c65FbA8f",
+      "address": "0x1E7B69Ff8be554294dB8cb525176728b73f8eCBb",
       "decimals": "18",
       "name": "Frax Ether",
       "symbol": "frxETH"
@@ -25,24 +23,26 @@
     "wETH": {
       "YBTs": {
         "stETH": {
-          "address": "0x79D839aFC9d19c7ad204B954ca2d03B8732c04e9",
+          "address": "0x10B53DF37A0E79f10df2C5a7AE0b4A795d944D0c",
           "decimals": "18",
           "name": "Lido Staked Ether",
-          "syAddress": "0x98c8FAa40c079464A2bEBf7a1609d38c2CAdE682",
+          "syAddress": "0x141F1b35Cba3094AD344a5ba2C59395E0Ae3F03d",
           "symbol": "stETH"
         },
         "swETH": {
-          "address": "0xC3B30f11666aaF9E3437Be023476A03b8D0dbF80",
+          "address": "0xC8002341Ba23091760e669CE27f3943506b976cA",
           "decimals": "18",
           "name": "Swell Staked Ether",
-          "syAddress": "0xDe93b41fc8B5aaa4820Af5e1dCA3C048252b2E4F",
+          "syAddress": "0x1f9cA29D75C6F9661CFEA51a92F1c877d547645c",
           "symbol": "swETH"
         }
       },
-      "address": "0xa885c5a941fe9aA1E0384548Df443c72Ca9f06Fd",
+      "address": "0xc04f27749CF7fC711c5C42F3cAF1099365AeF717",
       "decimals": "18",
       "name": "Wrapped Ether",
       "symbol": "wETH"
     }
-  }
+  },
+  "spiralPoolFactory": "0xaa55937bfa0A62274ab83563354815188e589A28",
+  "spiralPoolRouter": "0x0000000000000000000000000000000000000000"
 }

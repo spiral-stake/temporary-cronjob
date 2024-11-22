@@ -75,7 +75,7 @@ async function _schedulePickCycleWinner(pool) {
     cron.schedule(cycleCronTime, async () => {
       console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
       try {
-        await pool.contract.selectWinnerAndTransferLiquidity();
+        await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
       } catch (error) {
         // corrected variable name here
         console.log("Error in selectWinnerAndTransferLiquidity:", error);
