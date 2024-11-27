@@ -1,14 +1,17 @@
 const cron = require("node-cron");
 const ethers = require("ethers");
 const { abi: spiralPoolAbi } = require("../abi/SpiralPool.sol/SpiralPool.json");
-const { abi: poolFactoryAbi } = require("../abi/SpiralPoolFactory.sol/SpiralPoolFactory.json");
 const { getCronTime } = require("../utils/getCronTime");
+const { sendRandomTxn } = require("../utils/sendRandomTxn");
 
-async function getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactoryAddress, baseTokens) {
-  const poolFactoryContract = new ethers.Contract(spiralPoolFactoryAddress, poolFactoryAbi, wallet);
-
+async function getInitialPoolsAndScheduleCronjob(
+  wallet,
+  spiralPoolFactory,
+  baseTokens,
+  delayedRNG
+) {
   for (let baseToken of baseTokens) {
-    const spiralPoolAddresses = await poolFactoryContract.getSpiralPoolsForBaseToken(
+    const spiralPoolAddresses = await spiralPoolFactory.getSpiralPoolsForBaseToken(
       baseToken.address
     );
 
@@ -19,7 +22,7 @@ async function getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactoryAddres
     );
 
     spiralPools.forEach((pool) => {
-      scheduleCronjob(pool);
+      scheduleCronjob(pool, delayedRNG);
     });
   }
 }
@@ -45,13 +48,13 @@ async function getSpiralPool(wallet, poolAddress) {
   };
 }
 
-async function scheduleCronjob(pool) {
+async function scheduleCronjob(pool, delayedRNG) {
   if (Date.now() < pool.startTime * 1000) {
     const cronTime = getCronTime(pool.startTime);
     cron.schedule(cronTime, async () => {
       const positionsFilled = parseInt(await pool.contract.getPositionsFilled());
       if (positionsFilled === pool.requiredPositions) {
-        _schedulePickCycleWinner(pool);
+        _schedulePickCycleWinner(pool, delayedRNG);
       }
     });
 
@@ -59,14 +62,14 @@ async function scheduleCronjob(pool) {
   } else {
     const positionsFilled = parseInt(await pool.contract.getPositionsFilled());
     if (positionsFilled === pool.requiredPositions) {
-      _schedulePickCycleWinner(pool);
+      _schedulePickCycleWinner(pool, delayedRNG);
     }
 
     console.log("Pool start time has already elapsed. Scheduled immediately.");
   }
 }
 
-async function _schedulePickCycleWinner(pool) {
+async function _schedulePickCycleWinner(pool, delayedRNG) {
   for (let i = 0; i < pool.totalCycles; i++) {
     const cycleTime = pool.startTime + pool.cycleDepositDuration + i * pool.cycleDuration;
 
@@ -75,11 +78,17 @@ async function _schedulePickCycleWinner(pool) {
 
       cron.schedule(cycleCronTime, async () => {
         console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
-        try {
-          await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
-        } catch (error) {
-          // corrected variable name here
-          console.log("Error in selectWinnerAndTransferLiquidity:", error);
+        const tx = await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
+
+        if (delayedRNG) {
+          sendRandomTxn(); // Don't remove, essential for local
+          const receipt = await tx.wait(2); // This needs to change (be varying)
+
+          const requestId = receipt.logs.find(
+            (log) => log.fragment?.name === "RequestedCycleWinner"
+          )?.args[0];
+
+          await delayedRNG.fulfillRandomWords(requestId, { gasLimit: 500000 });
         }
       });
 

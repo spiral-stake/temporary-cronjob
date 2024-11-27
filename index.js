@@ -12,6 +12,8 @@ const { getCommandArgs } = require("./utils/getCommandArgs");
 const { onboard } = require("./scripts/onboard");
 const { getTokens } = require("./utils/getTokens");
 const { corsOption } = require("./config/cors");
+const { abi: poolFactoryAbi } = require("./abi/SpiralPoolFactory.sol/SpiralPoolFactory.json");
+const { abi: delayedRNGAbi } = require("./abi/DelayedRNG.sol/DelayedRNG.json");
 
 const app = express();
 const { port, rpcUrl, chain, privateKey } = getCommandArgs();
@@ -19,8 +21,13 @@ const provider = new ethers.JsonRpcProvider(rpcUrl);
 const wallet = new ethers.Wallet(privateKey, provider);
 
 const addresses = require(`./addresses/${chain}.json`);
-const { spiralPoolFactory } = addresses;
+const { spiralPoolFactory: spiralPoolFactoryAddress, delayedRNG: delayedRNGAddress } = addresses;
 const { ybts, baseTokens } = getTokens(addresses);
+
+const spiralPoolFactory = new ethers.Contract(spiralPoolFactoryAddress, poolFactoryAbi, wallet);
+const delayedRNG = delayedRNGAddress
+  ? new ethers.Contract(delayedRNGAddress, delayedRNGAbi, wallet)
+  : null;
 
 app.use(cors(corsOption));
 app.use(express.json());
@@ -30,7 +37,7 @@ app.post("/schedule-pool-cronjob", async (req, res) => {
 
   try {
     const pool = await getSpiralPool(wallet, poolAddress);
-    scheduleCronjob(pool);
+    scheduleCronjob(pool, delayedRNG);
     res.send(`Cronjob scheduled for ${poolAddress}`);
   } catch (error) {
     console.error("Error scheduling cron job:", error);
@@ -46,7 +53,7 @@ app.post("/onboard", async (req, res) => {
 });
 
 app.listen(port, async () => {
-  getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactory, baseTokens);
+  getInitialPoolsAndScheduleCronjob(wallet, spiralPoolFactory, baseTokens, delayedRNG);
   scheduleAddYbtYieldCronjob(wallet, ybts);
 
   console.log(`Server running on port ${port}`);

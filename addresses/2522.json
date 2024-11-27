@@ -1,0 +1,49 @@
+{
+  "YBTs": {
+    "aFRAX": "0x90a5A1245e23655a882AE6814637354bC9888847",
+    "sfrxETH": "0x3ed6720FEA5ED2d6897dB689112e4DcD2ab17fCF",
+    "swETH": "0xF45872f3789E4348B47105B1cc6D7d9d08317D6C"
+  },
+  "baseTokens": {
+    "FRAX": {
+      "YBTs": {
+        "aFRAX": {
+          "address": "0x90a5A1245e23655a882AE6814637354bC9888847",
+          "decimals": "18",
+          "name": "Aave Frax",
+          "syAddress": "0xB6427292e8B132ceFbdf9E4577D6ABd1d8734b33",
+          "symbol": "aFRAX"
+        }
+      },
+      "address": "0x11386Adab76D5595D14c6B4b9460C4A71bE74381",
+      "decimals": "18",
+      "name": "Frax USD",
+      "symbol": "FRAX"
+    },
+    "frxETH": {
+      "YBTs": {
+        "sfrxETH": {
+          "address": "0x3ed6720FEA5ED2d6897dB689112e4DcD2ab17fCF",
+          "decimals": "18",
+          "name": "Staked Frax Ether",
+          "syAddress": "0xADB5764E9D956B0809086977dd62D7393D6f0002",
+          "symbol": "sfrxETH"
+        },
+        "swETH": {
+          "address": "0xF45872f3789E4348B47105B1cc6D7d9d08317D6C",
+          "decimals": "18",
+          "name": "Swell Staked Ether",
+          "syAddress": "0x0B13D9BE0098dB39CbC1Fc310de248216DB19C4D",
+          "symbol": "swETH"
+        }
+      },
+      "address": "0x75EFb1620a75E9a39932Aa1a3F7DcD4d3Bc50983",
+      "decimals": "18",
+      "name": "Frax Ether",
+      "symbol": "frxETH"
+    }
+  },
+  "delayedRNG": "0xa938099741ad5D46457d1af4dd051d3e830296E3",
+  "spiralPoolFactory": "0x672BF378118A5bd1Fc7C8946B7a0b21A68CE22EC",
+  "spiralPoolRouter": "0x0000000000000000000000000000000000000000"
+}
