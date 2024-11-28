@@ -5,6 +5,7 @@ const { rpcUrl, privateKey, chain } = getCommandArgs();
 
 exports.sendRandomTxn = async () => {
   if (chain === "31337" || chain === "31338") {
+    console.log("Sending random txn on local");
     const provider = new ethers.JsonRpcProvider(rpcUrl);
     const wallet = new ethers.Wallet(privateKey, provider);
 

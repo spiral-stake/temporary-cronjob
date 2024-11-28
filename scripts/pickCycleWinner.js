@@ -78,7 +78,16 @@ async function _schedulePickCycleWinner(pool, delayedRNG) {
 
       cron.schedule(cycleCronTime, async () => {
         console.log(`Pinging ${pool.address} at cycle - ${i + 1}`);
-        const tx = await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
+
+        let tx;
+        while (!tx) {
+          try {
+            tx = await pool.contract.requestCycleWinner({ value: ethers.parseEther("0.001") });
+          } catch (error) {
+            console.log("retrying cycle winner", error);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
 
         if (delayedRNG) {
           sendRandomTxn(); // Don't remove, essential for local
@@ -88,7 +97,17 @@ async function _schedulePickCycleWinner(pool, delayedRNG) {
             (log) => log.fragment?.name === "RequestedCycleWinner"
           )?.args[0];
 
-          await delayedRNG.fulfillRandomWords(requestId, { gasLimit: 500000 });
+          console.log(`Fulfilling random words`);
+
+          let tx2;
+          while (!tx2) {
+            try {
+              tx2 = await delayedRNG.fulfillRandomWords(requestId, { gasLimit: 500000 });
+            } catch (error) {
+              console.log("retrying fulfill", error);
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+          }
         }
       });
 
